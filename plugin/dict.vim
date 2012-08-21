@@ -1,6 +1,6 @@
 " vim-dict - The Dict client for Vim
 " Maintainer:   Szymon Wrozynski
-" Version:      1.1.0
+" Version:      1.1.1
 "
 " Installation:
 " Place in ~/.vim/plugin/dict.vim or in case of Pathogen:
@@ -22,6 +22,14 @@ endif
 
 let g:loaded_dict = 1
 
+if !exists("g:dict_curl_command")
+    let g:dict_curl_command = "curl"
+endif
+
+if !exists("g:dict_curl_options")
+    let g:dict_curl_options = "--connect-timeout 30"
+endif
+
 if !exists("g:dict_hosts")
     let g:dict_hosts = [["dict.org", ["all"]]]
 endif
@@ -31,8 +39,8 @@ if !exists("g:dict_leave_pw")
 endif
 
 command! -nargs=? Dict :call s:dict("<args>")
-command! DictShowDb :call s:dict_show_db()
-command! -range DictSelection :call s:dict(getline("'<")[getpos("'<")[2] - 1:getpos("'>")[2] - 1])
+command! -nargs=0 DictShowDb :call s:dict_show_db()
+command! -nargs=0 -range DictSelection :call s:dict(getline("'<")[getpos("'<")[2] - 1:getpos("'>")[2] - 1])
 
 fun! s:dict(...)
     let word = a:0 > 0 ? a:1 : ""
@@ -41,17 +49,21 @@ fun! s:dict(...)
         let word = expand("<cword>")
     endif
 
-    let word = "\"" . substitute(tolower(word), '^\s*\(.\{-}\)\s*$', '\1', '') . "\""
+    let word = substitute(tolower(word), '^\s*\(.\{-}\)\s*$', '\1', '')
+    let quoted_word = "\"" . word . "\""
 
-    silent! exe "noautocmd botright pedit Dict"
+    silent! | redraw | echo "Perform lookup for" quoted_word "- please wait..."
+
+    silent! exe "noautocmd botright pedit Dict:'" . word . "'"
     noautocmd wincmd P
-    set buftype=nofile
+    setlocal buftype=nofile ff=dos
+
     for host in g:dict_hosts
         for db in host[1]
-            silent! exe "noautocmd r! curl -s dict://" . host[0] . "/d:" . word . ":" . db
+            silent! exe "noautocmd r!" g:dict_curl_command "-s" g:dict_curl_options "dict://" . host[0] . "/d:" . quoted_word . ":" . db
         endfor
     endfor
-    silent! exe "%s///g"
+
     silent! exe "%s/^151 //g"
     silent! exe "%s/^153 //g"
     silent! exe "%s/^\.$/--------------------------------------------------------------------------------/g"
@@ -59,7 +71,7 @@ fun! s:dict(...)
     silent! exe "1d_"
 
     if line("$") == 1
-        silent! exe "normal a Nothing found for " . word
+        silent! exe "normal a Nothing found for" quoted_word
     endif
 
     if g:dict_leave_pw
@@ -68,16 +80,19 @@ fun! s:dict(...)
 endfun
 
 fun! s:dict_show_db()
+    silent! | redraw | echo "Connecting to DICT servers - please wait..."
+
     silent! exe "noautocmd botright pedit Dict:show:db"
     noautocmd wincmd P
-    set buftype=nofile
+    set buftype=nofile ff=dos
+
     for host in g:dict_hosts
         silent! exe "normal I--------------------------------------------------------------------------------\r"
         silent! exe "normal IServer: " . host[0] . "\r"
         silent! exe "normal I--------------------------------------------------------------------------------\r"
-        silent! exe "noautocmd r! curl -s dict://" . host[0] . "/show:db"
+        silent! exe "noautocmd r!" g:dict_curl_command "-s" g:dict_curl_options "dict://" . host[0] . "/show:db"
     endfor
-    silent! exe "%s///g"
+
     silent! exe "%s/^110 //g"
     silent! exe "%s/^\.$//g"
     silent! exe "g/^\s*[0-9][0-9][0-9]/d_"

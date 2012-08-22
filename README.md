@@ -25,15 +25,12 @@ To lookup a word (or words) in the dictionary use `Dict` command:
 The `Dict` command uses hosts and databases defined in the `g:dict_hosts` global list. By
 default it is set to `[["dict.org", ["all"]]]` (the format will be explained a bit later).
 
-`Dict` command can use a current word under the cursor. Just move the cursor to a word and
-type in the command line:
+`Dict` command can use a word under the cursor. Just move the cursor to a word and type in
+the command line:
 
     :Dict
 
-You can also select words in the visual mode with help of the `DictSelection` command:
-
-    :DictSelection
-
+The same works on selection - just select multiple words in the Visual mode.
 
 Configuration
 -------------

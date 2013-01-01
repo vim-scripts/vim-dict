@@ -1,6 +1,6 @@
 " vim-dict - The Dict client for Vim
 " Maintainer:   Szymon Wrozynski
-" Version:      1.2.0
+" Version:      1.2.1
 "
 " Installation:
 " Place in ~/.vim/plugin/dict.vim or in case of Pathogen:
@@ -38,7 +38,7 @@ if !exists("g:dict_leave_pw")
     let g:dict_leave_pw = 0
 endif
 
-command! -nargs=? -range Dict :call s:dict("<args>")
+command! -nargs=? -range Dict :call s:dict(<q-args>)
 command! -nargs=0 DictShowDb :call s:dict_show_db()
 
 fun! s:dict(word)
@@ -55,6 +55,7 @@ fun! s:dict(word)
 
     silent! exe "noautocmd botright pedit Dict:'" . word . "'"
     noautocmd wincmd P
+    setlocal modifiable
     setlocal buftype=nofile ff=dos
 
     for host in g:dict_hosts
@@ -73,6 +74,9 @@ fun! s:dict(word)
         silent! exe "normal a Nothing found for" quoted_word
     endif
 
+    setlocal nomodifiable
+    nnoremap <buffer><silent> q :pc<CR>
+
     if g:dict_leave_pw
         noautocmd wincmd p
     endif
@@ -83,6 +87,7 @@ fun! s:dict_show_db()
 
     silent! exe "noautocmd botright pedit Dict:show:db"
     noautocmd wincmd P
+    setlocal modifiable
     set buftype=nofile ff=dos
 
     for host in g:dict_hosts
@@ -97,6 +102,9 @@ fun! s:dict_show_db()
     silent! exe "g/^\s*[0-9][0-9][0-9]/d_"
     silent! exe "g/^$/d_"
     silent! exe "0"
+
+    setlocal nomodifiable
+    nnoremap <buffer><silent> q :pc<CR>
 
     if g:dict_leave_pw
         noautocmd wincmd p

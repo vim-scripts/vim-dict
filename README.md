@@ -1,8 +1,8 @@
 vim-dict
 ========
 
-**vim-dict** is a dict client. It uses **curl** to connect to dict servers, so make sure
-you have **curl** installed.
+**vim-dict** is a dict client. It uses **curl** to connect to dict servers, so make sure you have **curl**
+installed.
 
 
 Installation
@@ -22,15 +22,18 @@ To lookup a word (or words) in the dictionary use `Dict` command:
     :Dict hello
     :Dict start up
 
-The `Dict` command uses hosts and databases defined in the `g:dict_hosts` global list. By
-default it is set to `[["dict.org", ["all"]]]` (the format will be explained a bit later).
+The `Dict` command uses hosts and databases defined in the `g:dict_hosts` global list. By default it is set to
+`[["dict.org", ["all"]]]` (the format will be explained a bit later).
 
-`Dict` command can use a word under the cursor. Just move the cursor to a word and type in
-the command line:
+`Dict` command can use a word under the cursor. Just move the cursor to a word and type in the command line:
 
     :Dict
 
 The same works on selection - just select multiple words in the Visual mode.
+
+The `:Dict` command will open a preview window. To close that window you may run `:pc`, or just hit
+`q` if the Dict window is the active one.
+
 
 Configuration
 -------------
@@ -39,9 +42,8 @@ There are just a few global variables (options) you may set in the *.vimrc* file
 
 * `g:dict_hosts`
 
-  The most important one is a list `g:dict_hosts` mentioned earlier. It combines
-  hosts/databases used by **vim-dict**. The list entries are lists themselves and share
-  the following format:
+  The most important one is a list `g:dict_hosts` mentioned earlier. It combines hosts/databases used by
+  **vim-dict**. The list entries are lists themselves and share the following format:
 
         ["host_name", ["database1", "database2", ...]]
 
@@ -52,28 +54,27 @@ There are just a few global variables (options) you may set in the *.vimrc* file
             \["dict.mova.org", ["slovnyk_en-pl", "slovnyk_pl-en"]]
         \]
 
-  Moreover **vim-dict** can help you figure out what databases are available on your
-  servers. There is a special command for this:
+  Moreover **vim-dict** can help you figure out what databases are available on your servers. There is
+  a special command for this:
 
         :DictShowDb
 
-  You can even open your .vimrc and provide some host urls only:
+  You can even open your *.vimrc* and provide some host urls only:
 
         let g:dict_hosts = [
             \["dict.org", []],
             \["dict.mova.org", []]
         \]
 
-  Then save and reload *.vimrc*, perform `DictShowDb` and yank-paste the databases you
-  want :).
+  Then save and reload *.vimrc*, perform `DictShowDb` and yank-paste the databases you want :).
 
-  The list of DICT servers can be found on the internet, e.g.
+  The list of DICT servers can be found on the Internet, e.g.
   [here](http://luetzschena-stahmeln.de/dictd/index.php).
 
 * `g:dict_leave_pw`
 
-  If set to `1` **vim-dict** leaves the preview window (the focus remains on the current
-  window). By default it is set to `0`.
+  If set to `1` **vim-dict** leaves the preview window (the focus remains on the current window). By default
+  it is set to `0`.
 
   Example:
 
@@ -81,9 +82,8 @@ There are just a few global variables (options) you may set in the *.vimrc* file
 
 * `g:dict_curl_command`[*][1]
 
-  This variable holds the curl command to be fired by `Dict` function. You will find it
-  handy if **curl** is not on your `$PATH` environment variable. By default it is set to
-  `"curl"`.
+  This variable holds the curl command to be fired by `Dict` function. You will find it handy if **curl** is
+  not on your `$PATH` environment variable. By default it is set to `"curl"`.
 
   Example:
 
@@ -92,9 +92,9 @@ There are just a few global variables (options) you may set in the *.vimrc* file
 
 * `g:dict_curl_options`[*][1]
 
-  Sometimes you might want to add additional options to the curl invocation, e.g.
-  additonal proxy settings. By default it defines only the connection timeout. Notice, the
-  option `-s` (silent) is always present regardless of this variable.
+  Sometimes you might want to add additional options to the curl invocation, e.g. additonal proxy settings.
+  By default it defines only the connection timeout. Notice, the option `-s` (silent) is always present
+  regardless of this variable.
 
   Example:
 
@@ -108,9 +108,9 @@ On Ubuntu you might want to add system dictionary to Vim:
 
     set dictionary+=/usr/share/dict/words
 
-This will enable the dictionary in the insert mode (CTRL-X CTRL-K). Additionaly it could
-be useful to add the dictionary to the standard word completions (CTRL-N...) for text and
-Markdown file types. To do this set the `complete` to include *k* value:
+This will enable the dictionary in the insert mode (CTRL-X CTRL-K). Additionaly it could be useful to add the
+dictionary to the standard word completions (CTRL-N...) for text and Markdown file types. To do this set the
+`complete` to include *k* value:
 
     au FileType text,markdown setlocal complete+=k
 
@@ -118,7 +118,6 @@ Markdown file types. To do this set the `complete` to include *k* value:
 License
 -------
 
-Copyright &copy; 2012 Szymon Wrozynski. Distributed under the same terms as Vim itself.
-See `:help license`
+Copyright &copy; 2012 Szymon Wrozynski. Distributed under the same terms as Vim itself. See `:help license`
 
-[1]: https://github.com/szw/vim-dict/pull/1  "Thanks to Ingo Karkat"
+[1]: https://github.com/szw/vim-dict/pull/1 "Thanks to Ingo Karkat"
